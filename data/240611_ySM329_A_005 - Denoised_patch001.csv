@@ -1,4 +1,4 @@
-Time,Area,Mean,Mode,Min,Max,Perim.,Circ,Feret,IntDen,RawIntDen,Slice,FeretX,FeretY,FeretAngle,MinFeret,AR,Round,Solidity
+Time,Area,Mean,Mode,Min,Max,Perim.,Circ.,Feret,IntDen,RawIntDen,Slice,FeretX,FeretY,FeretAngle,MinFeret,AR,Round,Solidity
 1,0.013,164.000,144,144,187,0.368,1.000,0.184,2.079,492.000,17,4,8,45.000,0.130,1.464,0.683,0.857
 2,0.017,139.000,131,131,148,0.368,1.000,0.184,2.349,556.000,18,4,6,135.000,0.130,1.000,1.000,1.000
 3,0.030,168.000,135,135,204,0.552,1.000,0.234,4.969,1176.000,19,4,5,123.690,0.195,1.069,0.936,0.875
