@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import csv
+import json
 
 
 #constants
@@ -55,16 +56,18 @@ def read_csv(f_list, comb):
 
 def make_time_graphs(f_list, columns, destination):
     for name in columns:
-        if name != "Time" and name != "time":
-            for file in f_list:
-                csv = pd.read_csv(file)
-                try:
-                    print(name)
-                    plt.scatter(csv["Time"], csv[name])
-                except KeyError:
-                    print("Was not able to find the key...")
-        plt.title("Time VS " + name)
-        plt.savefig(destination + "/Time" + name + ".png")
+        if name[0] == "Time":
+            if name[1] != "Time":
+                print("Creating", name[0], "VS", name[1], "graph...")
+                for file in f_list:
+                    csv = pd.read_csv(file)
+                    try:
+                        plt.scatter(csv["Time"], csv[name[1]])
+                    except KeyError:
+                        print("Was not able to find the key...")
+                plt.title("Time VS " + name[1])
+                plt.savefig(destination + "/Time" + name[1] + ".png")
+        
 
 def find_column_index_by_name(name, file):
     with open(file) as csv_file:
@@ -163,6 +166,16 @@ def multiple_csv_to_fill_dict(f_list, columns):
         # plt.savefig(destination + "/Time" + name + ".png")
         # plt.cla()
 
+def dict_to_json(dict):
+    with open("data.json", "w") as outfile: 
+        json.dump(dict, outfile)
+
+def json_to_dict(file):
+    with open(file) as json_file:
+        dict = json.load(json_file)
+    return dict
+
+
 def plot_column_fill(dict, name, destination):
     min = []
     max = []
@@ -179,6 +192,7 @@ def plot_column_fill(dict, name, destination):
     plt.fill_between(t, max, min, color="gray")
     plt.title("Time VS " + name)
     plt.savefig(destination + "/Time" + name + ".png")
+    plt.cla()
 
 
 #functions-end
@@ -189,9 +203,15 @@ def main():
     time_graph_folder_path = "/Users/antonvalov/Documents/PatchData/time_graphs"
     csv_files_path = "/Users/antonvalov/Documents/PatchData/data"
     csv_for_column_search_path = "/Users/antonvalov/Documents/PatchData/data/240611_ySM329_A_005 - Denoised_patch001.csv"
+    graphs_path = "/Users/antonvalov/Documents/PatchData/graphed_data/"
     #print(graph_combinations("/Users/antonvalov/Documents/PatchData/data/240611_ySM329_A_005 - Denoised_patch001.csv"))
-    #make_time_graphs(find_all_data("/Users/antonvalov/Documents/PatchData/data"), graph_combinations("/Users/antonvalov/Documents/PatchData/data/240611_ySM329_A_005 - Denoised_patch001.csv"), "/Users/antonvalov/Documents/PatchData/graphed_data/")
-    plot_column_fill(multiple_csv_to_fill_dict(find_all_data(csv_files_path), list_all_columns(csv_for_column_search_path)), "Area", "/Users/antonvalov/Documents/PatchData/graphed_data/")
+    #make_time_graphs(find_all_data("/Users/antonvalov/Documents/PatchData/data"), graph_combinations("/Users/antonvalov/Documents/PatchData/data/240611_ySM329_A_005 - Denoised_patch001.csv"), "/Users/antonvalov/Documents/PatchData/time_graphs")
+    
+    # dict_to_json(multiple_csv_to_fill_dict(find_all_data(csv_files_path), list_all_columns(csv_for_column_search_path)))
+    for name in list_all_columns(csv_for_column_search_path):
+        if name != "Time":
+            print("Creating", name, "graph...")
+            plot_column_fill(json_to_dict("data.json"), name, graphs_path)
 
 #main call
 if __name__ == "__main__":
