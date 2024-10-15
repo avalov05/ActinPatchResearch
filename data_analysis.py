@@ -50,7 +50,7 @@ def read_csv(f_list, comb):
             except KeyError:
                 print("Was not able to find the key...")
         plt.title(names[0] + " VS " + names[1])
-        plt.savefig("./graphed_data/" + names[0] + names[1] + ".png")
+        plt.savefig("/Users/antonvalov/Documents/PatchData/graphed_data/" + names[0] + names[1] + ".png")
         plt.cla()
 
 def make_time_graphs(f_list, columns, destination):
@@ -87,6 +87,7 @@ def line_num_in_csv(file):
 
 def multiple_csv_to_fill_dict(f_list, columns):
     data_dict={}
+    count = 0
     for name in columns:
         if name != "Time" and name != "time":
             data_dict[name] = []
@@ -113,13 +114,15 @@ def multiple_csv_to_fill_dict(f_list, columns):
                                         min = item
                                 else:
                                     min = item
+                            print("Iteration", count)
+                            count += 1
                             line_count += 1
                     #print(name, line_num, min, max)
                 #print("------------")
                 average = sum/len(f_list)
                 #print(name, line_num, min, max, average)
                 data_dict[name].append({"min": min, "average": average, "max": max})
-    print(data_dict)
+    return data_dict
     # data_dict={}
     # for name in columns:
     #     data_dict[name] = {
@@ -160,8 +163,23 @@ def multiple_csv_to_fill_dict(f_list, columns):
         # plt.savefig(destination + "/Time" + name + ".png")
         # plt.cla()
 
-def plot_column_fill():
-    print
+def plot_column_fill(dict, name, destination):
+    min = []
+    max = []
+    average = []
+    t = []
+    time = 1.0
+    for t_data in dict[name]:
+        min.append(t_data["min"])
+        max.append(t_data["max"])
+        average.append(t_data["average"])
+        t.append(time)
+        time += 1.0
+    plt.plot(t, average, color="orange")
+    plt.fill_between(t, max, min, color="gray")
+    plt.title("Time VS " + name)
+    plt.savefig(destination + "/Time" + name + ".png")
+
 
 #functions-end
 
@@ -172,8 +190,8 @@ def main():
     csv_files_path = "/Users/antonvalov/Documents/PatchData/data"
     csv_for_column_search_path = "/Users/antonvalov/Documents/PatchData/data/240611_ySM329_A_005 - Denoised_patch001.csv"
     #print(graph_combinations("/Users/antonvalov/Documents/PatchData/data/240611_ySM329_A_005 - Denoised_patch001.csv"))
-    #read_csv(find_all_data("/Users/antonvalov/Documents/PatchData/data"), graph_combinations("/Users/antonvalov/Documents/PatchData/data/240611_ySM329_A_005 - Denoised_patch001.csv"))
-    multiple_csv_to_fill_dict(find_all_data(csv_files_path), list_all_columns(csv_for_column_search_path))
+    #make_time_graphs(find_all_data("/Users/antonvalov/Documents/PatchData/data"), graph_combinations("/Users/antonvalov/Documents/PatchData/data/240611_ySM329_A_005 - Denoised_patch001.csv"), "/Users/antonvalov/Documents/PatchData/graphed_data/")
+    plot_column_fill(multiple_csv_to_fill_dict(find_all_data(csv_files_path), list_all_columns(csv_for_column_search_path)), "Area", "/Users/antonvalov/Documents/PatchData/graphed_data/")
 
 #main call
 if __name__ == "__main__":
